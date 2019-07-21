@@ -441,12 +441,7 @@ func WindowHintString(hint Hint, value string) {
 // vary depending on driver settings and defaults.
 //
 // This function must only be called from the main thread.
-func CreateWindow(
-	width, height int,
-	title string,
-	monitor *Monitor,
-	share *Window,
-) *Window {
+func CreateWindow(width, height int, title string, monitor *Monitor, share *Window) (*Window, error) {
 	var (
 		m *C.GLFWmonitor
 		s *C.GLFWwindow
@@ -465,12 +460,12 @@ func CreateWindow(
 
 	w := C.glfwCreateWindow(C.int(width), C.int(height), t, m, s)
 	if w == nil {
-		return nil
+		return nil, acceptError(APIUnavailable, VersionUnavailable)
 	}
 
 	wnd := &Window{data: w}
 	windows.put(wnd)
-	return wnd
+	return wnd, nil
 }
 
 // Destroy destroys the specified window and its context. On calling this

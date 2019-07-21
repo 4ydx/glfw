@@ -29,8 +29,9 @@ const (
 // termination will return true immediately.
 //
 // This function must only be called from the main thread.
-func Init() bool {
-	return glfwbool(C.glfwInit())
+func Init() error {
+	C.glfwInit()
+	return acceptError(APIUnavailable)
 }
 
 // Terminate function destroys all remaining windows and cursors, restores any
